@@ -1,0 +1,23 @@
+{
+  "SDKVersion": 2,
+  "Name": "LoopNest",
+  "Author": "LoopNest",
+  "Version": "0.1.0.0",
+  "Description": "Control LoopNest from a Stream Deck: mute, solo, sends, scenes, soundboard pads.",
+  "CodePath": "plugin.html",
+  "Icon": "icon",
+  "Category": "LoopNest",
+  "CategoryIcon": "icon",
+  "OS": [{ "Platform": "mac", "MinimumVersion": "10.15" }],
+  "Software": { "MinimumVersion": "6.4" },
+  "Actions": [
+    {
+      "UUID": "com.loopnest.command",
+      "Name": "LoopNest command",
+      "Icon": "icon",
+      "Tooltip": "Sends one LoopNest remote command, for example mute/Mic or scene/Podcast",
+      "PropertyInspectorPath": "inspector.html",
+      "States": [{ "Image": "icon", "TitleAlignment": "bottom" }, { "Image": "icon", "TitleAlignment": "bottom" }]
+    }
+  ]
+}

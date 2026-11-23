@@ -1,0 +1,11 @@
+.build/
+build/
+dist/
+backups/
+*.log
+env.log
+profile.txt
+test-results.txt
+.DS_Store
+*.xcuserstate
+node_modules/

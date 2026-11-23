@@ -1,0 +1,27 @@
+<!DOCTYPE html><html><body><script>
+// Stream Deck plugin for LoopNest. Each button stores a command such as "mute/Mic" and an optional
+// "lit when" field such as "mute:Mic" (mute, solo, stream, meeting, monitor) that switches the button to its second state.
+let ws, uuid, settings = {}, contexts = {}
+function connectElgatoStreamDeckSocket(port, pluginUUID, registerEvent) {
+  uuid = pluginUUID; ws = new WebSocket('ws://127.0.0.1:' + port)
+  ws.onopen = () => ws.send(JSON.stringify({ event: registerEvent, uuid }))
+  ws.onmessage = (m) => {
+    const d = JSON.parse(m.data)
+    if (d.event === 'willAppear') { contexts[d.context] = d.payload.settings || {} }
+    if (d.event === 'willDisappear') delete contexts[d.context]
+    if (d.event === 'didReceiveSettings') contexts[d.context] = d.payload.settings || {}
+    if (d.event === 'keyUp') { const c = contexts[d.context] || {}; if (c.command) fetch('http://127.0.0.1:9123/' + c.command.replace(/^\//, '').split('/').map(encodeURIComponent).join('/')).catch(() => ws.send(JSON.stringify({ event: 'showAlert', context: d.context }))) }
+  }
+  setInterval(poll, 700)
+}
+async function poll() {
+  let s; try { s = await (await fetch('http://127.0.0.1:9123/state')).json() } catch (e) { return }
+  for (const [ctx, c] of Object.entries(contexts)) {
+    if (!c.lit) continue
+    const [key, name] = c.lit.split(':'); let on = false
+    if (['dim', 'mono', 'streamMute'].includes(key)) on = !!s[key]
+    else { const n = (name || '').toLowerCase(); const st = s.strips.find(x => x.name.toLowerCase().startsWith(n)); on = !!(st && st[key]) }
+    ws.send(JSON.stringify({ event: 'setState', context: ctx, payload: { state: on ? 1 : 0 } }))
+  }
+}
+</script></body></html>

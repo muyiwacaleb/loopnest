@@ -1,0 +1,15 @@
+name: build
+on: [push, pull_request]
+jobs:
+  build-and-test:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: swift build -c release
+      - name: Compile the driver
+        run: |
+          mkdir -p /tmp/drv
+          clang -bundle -O2 -arch arm64 -arch x86_64 -mmacosx-version-min=14.0 -framework CoreFoundation -framework CoreAudio -o /tmp/drv/LoopNestDriver Driver/LoopNestDriver.c
+      - name: Self-tests
+        run: $(swift build -c release --show-bin-path)/LoopNest --selftest

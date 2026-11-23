@@ -1,0 +1,16 @@
+{
+  "id": "loopnest",
+  "name": "loopnest",
+  "shortname": "LoopNest",
+  "description": "Control LoopNest (mute, solo, faders, sends, scenes, soundboard pads) with live button feedback",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": "https://example.invalid/loopnest",
+  "bugs": "https://example.invalid/loopnest/issues",
+  "maintainers": [{ "name": "LoopNest", "email": "none@example.invalid" }],
+  "legacyIds": [],
+  "runtime": { "type": "node18", "api": "nodejs-ipc", "apiVersion": "0.0.0", "entrypoint": "../main.js" },
+  "products": ["LoopNest"],
+  "keywords": ["audio", "mixer"],
+  "manufacturer": "LoopNest"
+}

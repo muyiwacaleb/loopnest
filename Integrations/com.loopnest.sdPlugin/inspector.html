@@ -1,0 +1,15 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:sans-serif;font-size:12px;color:#ccc}input{width:100%;margin:4px 0 10px}</style></head><body>
+<div>Command (after the address), e.g. <b>mute/Mic</b>, <b>scene/Podcast</b>, <b>pad/3</b>, <b>meeting/Mic</b></div>
+<input id="command" oninput="save()">
+<div>Light up when (optional): <b>mute:Mic</b>, <b>solo:Mic</b>, <b>stream:Mic</b>, <b>meeting:Mic</b>, <b>monitor:Mic</b>, <b>dim</b>, <b>mono</b>, <b>streamMute</b></div>
+<input id="lit" oninput="save()">
+<script>
+let ws, uuid, ctx
+function connectElgatoStreamDeckSocket(port, pluginUUID, registerEvent, info, actionInfo) {
+  uuid = pluginUUID; ctx = JSON.parse(actionInfo).context
+  ws = new WebSocket('ws://127.0.0.1:' + port)
+  ws.onopen = () => { ws.send(JSON.stringify({ event: registerEvent, uuid })); ws.send(JSON.stringify({ event: 'getSettings', context: uuid })) }
+  ws.onmessage = (m) => { const d = JSON.parse(m.data); if (d.event === 'didReceiveSettings') { const s = d.payload.settings || {}; command.value = s.command || ''; lit.value = s.lit || '' } }
+}
+function save() { ws.send(JSON.stringify({ event: 'setSettings', context: uuid, payload: { command: command.value, lit: lit.value } })) }
+</script></body></html>
