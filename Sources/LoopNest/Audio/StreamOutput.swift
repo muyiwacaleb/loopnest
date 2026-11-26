@@ -47,7 +47,10 @@ final class StreamOutput {
         deviceRate = fmt.sampleRate
         let ratio = engineRate / fmt.sampleRate
         let player = self.player, meter = self.meter, counts = self.countsHealth
-        let src = AVAudioSourceNode(format: AVAudioFormat(standardFormatWithSampleRate: fmt.sampleRate, channels: fmt.channelCount)!) { _, _, frames, abl in
+        // Always render two channels; the engine converts to however many the device has. (A device that reports an odd
+        // channel layout used to make this format nil and crash LoopNest at launch.)
+        guard let srcFormat = AVAudioFormat(standardFormatWithSampleRate: fmt.sampleRate, channels: 2) else { statusText = "Stream device format not supported"; return }
+        let src = AVAudioSourceNode(format: srcFormat) { _, _, frames, abl in
             let t0 = mach_absolute_time()
             let h = Health.shared
             if counts { h.streamCallbacks &+= 1 }

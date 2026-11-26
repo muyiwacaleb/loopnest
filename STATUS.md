@@ -103,3 +103,7 @@ Lock-free ring buffer, automatic level (AGC), noise gate, chorus/flanger/phaser/
 ## Packaging and GitHub (22 Nov 2026)
 - **Verified:** `Package.command` ran on the Mac and produced `dist/LoopNest-0.1.0.dmg` (2.6 MB) plus a .sha256 file. Local git repository created with one commit.
 - **Not verified:** opening the disk image and installing from it on a clean Mac; notarization (not done, needs an Apple Developer ID); the GitHub Actions workflow (never run); `Publish.command` (never run; GitHub is not linked to the session that built this).
+
+## Launch crash fixed (26 Nov 2026, built, NOT yet verified)
+- Crash report: LoopNest quit at launch (StreamOutput.swift line 50, nil unwrapped) when the LoopNest Stream device reported a channel layout that no audio format could be built for. Fix: the stream always renders two channels and shows "Stream device format not supported" instead of crashing. New `dist/LoopNest-0.1.0.dmg` built 26 Nov 3:45 PM.
+- Not verified: launching the rebuilt app on the Mac. The fix is a guard; the real reason that device reported an odd layout is not known.
